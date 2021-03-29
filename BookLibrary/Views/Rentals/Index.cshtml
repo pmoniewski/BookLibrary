@@ -1,0 +1,51 @@
+﻿@model IEnumerable<BookLibrary.ViewModels.BookViewModel>
+
+<div class="container row p-0 m-0">
+	<div class="col-12">
+		<h1>@ViewData["Title"]</h1>
+	</div>
+	<div class="col-12 p-3">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>
+						@Html.DisplayNameFor(model => model.Isbn)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.Title)
+					</th>
+					<th>
+						@Html.DisplayNameFor(model => model.Author)
+					</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+			@foreach (var item in Model)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.Isbn)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Title)
+					</td>
+					<td>
+						@Html.DisplayFor(modelItem => item.Author)
+					</td>
+					<td>
+					@if (item.CurrentlyRented)
+					{
+						<a asp-action="EndRental" asp-route-id="@item.Id" class="btn btn-danger">End Rental</a>
+					}
+					else
+					{
+						<a asp-action="StartRental" asp-route-id="@item.Id" class="btn btn-success">Start Rental</a>
+					}
+					</td>
+				</tr>
+			}
+			</tbody>
+		</table>
+	</div>
+</div>

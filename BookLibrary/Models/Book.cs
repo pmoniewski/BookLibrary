@@ -1,0 +1,32 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
+namespace BookLibrary.Models
+{
+    public class Book
+    {
+        #region Simple properties
+
+        [Key]
+        public int Id { get; set; }
+
+        [Display(Name = "ISBN")]
+        [RegularExpression(@"^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$", ErrorMessage = "The number entered in the ISBN field is not valid.")]
+        public string Isbn { get; set; }
+
+        [Required]
+        public string Title { get; set; }
+
+        public string Author { get; set; }
+
+        #endregion
+
+
+        #region Navigation properties
+
+        public virtual IList<Rental> Rentals { get; set; }
+
+        #endregion
+    }
+}

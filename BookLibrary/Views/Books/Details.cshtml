@@ -1,0 +1,60 @@
+﻿@model BookLibrary.ViewModels.BookViewModel
+
+@{
+	ViewData["Title"] = "Book Details";
+}
+
+<div class="container row p-0 m-0">
+	<div class="col-6">
+		<h1>@ViewData["Title"]</h1>
+	</div>
+	<div class="col-2 offset-4">
+		<a asp-action="Index" class="btn btn-info form-control">Back to List</a>
+	</div>
+	<div class="col-12">
+		<hr />
+		<dl class="row p-3">
+			<dt class="col-3">
+				@Html.DisplayNameFor(model => model.Isbn)
+			</dt>
+			<dd class="col-9">
+				@Html.DisplayFor(model => model.Isbn)
+			</dd>
+			<dt class="col-3">
+				@Html.DisplayNameFor(model => model.Title)
+			</dt>
+			<dd class="col-9">
+				@Html.DisplayFor(model => model.Title)
+			</dd>
+			<dt class="col-3">
+				@Html.DisplayNameFor(model => model.Author)
+			</dt>
+			<dd class="col-9">
+				@Html.DisplayFor(model => model.Author)
+			</dd>
+			<dt class="col-3"></dt>
+			<dd class="col-9">
+				<div class="form-group row mt-3">
+					<div class="col-3">
+						<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success form-control">Edit</a>
+					</div>
+					<div class="col-3">
+						<a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger form-control">Delete</a>
+					</div>
+				</div>
+			</dd>
+		</dl>
+	</div>
+	@if (Model.Rentals != null)
+	{
+	<div class="col-12">
+		<h3>History of Rentals</h3>
+		<ul>
+		@foreach (var item in Model.Rentals.OrderByDescending(r => r.StartDate))
+		{
+			<li>@item.StartDate - @(item.EndDate != null ? item.EndDate : "current")</li>
+		}
+		</ul>
+	</div>
+	}
+</div>
