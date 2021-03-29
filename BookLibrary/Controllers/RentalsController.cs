@@ -54,7 +54,7 @@ namespace BookLibrary.Controllers
 
             ViewData["Title"] = "Available Books";
 
-            return View("Index", booksList);
+            return View(nameof(Index), booksList);
         }
 
 
@@ -74,7 +74,7 @@ namespace BookLibrary.Controllers
 
             ViewData["Title"] = "Rented Books";
 
-            return View("Index", booksList);
+            return View(nameof(Index), booksList);
         }
 
         // GET: Rentals/StartRental/5
@@ -93,7 +93,7 @@ namespace BookLibrary.Controllers
                 return BadRequest(e.Message);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(RentedBooks));
         }
 
         // GET: Rentals/EndRental/5
@@ -112,7 +112,7 @@ namespace BookLibrary.Controllers
                 return BadRequest(e.Message);
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(AvailableBooks));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
