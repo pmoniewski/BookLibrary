@@ -87,7 +87,7 @@ namespace BookLibrary.Services
 
             if (rental == null || rental.EndDate != null)
             {
-                throw new ArgumentException("Entity does not exist.");
+                throw new InvalidOperationException("Parameters are not valid.");
             }
 
             rental.EndDate = DateTime.Now;
