@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-namespace BookLibrary.Tests
+namespace BookLibrary.Tests.Controllers
 {
     [Collection("TestCollection")]
     public class HomeControllerTests
@@ -19,7 +19,7 @@ namespace BookLibrary.Tests
         }
 
         [Fact]
-        public async Task IndexOnGet_WithNoInput_ReturnsWelcomePage()
+        public async Task IndexOnGet_WhenEnteringWelcomePage_ReturnsViewResult()
         {
             // Arrange & Act
             var response = await _client.GetAsync("/");

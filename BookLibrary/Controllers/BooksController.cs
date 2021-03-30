@@ -161,6 +161,10 @@ namespace BookLibrary.Controllers
                 await _booksService.DeleteBook(id);
                 return RedirectToAction(nameof(Index));
             }
+            catch (ArgumentException e)
+            {
+                return NotFound(e.Message);
+            }
             catch (Exception e)
             {
                 return BadRequest(e.Message);

@@ -6,16 +6,20 @@ namespace BookLibrary.Tests
 {
     public class TestDbSeeder
     {
-        public TestDbSeeder()
-        {
-        }
-
-        public void Seed(ApplicationDbContext context)
+        public static void Initialize(ApplicationDbContext context)
         {
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
+        }
 
-            context.Books.AddRange(
+        public static void SeedBooks(ApplicationDbContext context)
+        {
+            context.Books.AddRange(Books);
+            context.SaveChanges();
+        }
+
+        public static readonly Book[] Books =
+        {
                 new Book
                 {
                     Isbn = "978-83-749-5905-6",
@@ -34,9 +38,6 @@ namespace BookLibrary.Tests
                     Title = "Mały Książę",
                     Author = "Antoine de Saint-Exupéry"
                 }
-            );
-
-            context.SaveChanges();
-        }
+        };
     }
 }
