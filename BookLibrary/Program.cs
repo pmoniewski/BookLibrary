@@ -23,7 +23,7 @@ namespace BookLibrary
 
                 try
                 {
-                    SeedData.Initialize(services);
+                    ApplicationDbSeeder.Initialize(services);
                 }
                 catch (Exception ex)
                 {

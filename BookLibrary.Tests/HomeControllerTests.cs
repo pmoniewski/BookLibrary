@@ -10,7 +10,7 @@ namespace BookLibrary.Tests
     public class HomeControllerTests
     {
         private readonly WebApplicationFactory<Startup> _factory;
-        private HttpClient _client { get; }
+        private readonly HttpClient _client;
 
         public HomeControllerTests(WebApplicationFactory<Startup> factory)
         {

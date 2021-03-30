@@ -6,7 +6,7 @@ using BookLibrary.Models;
 
 namespace BookLibrary.Data
 {
-    public class SeedData
+    public class ApplicationDbSeeder
     {
         public static void Initialize(IServiceProvider serviceProvider)
         {
