@@ -104,14 +104,13 @@ namespace BookLibrary.Tests.Controllers
             Assert.NotNull(rentals);
             Assert.Equal(TestDbSeeder.Rentals.Length, books.Count);
 
-            var activeRentals = rentals
-                .Where(r => r.EndDate == null)
-                .GroupBy(r => r.Book)
-                .ToList();
+            var availableBooks = books.Where(b => b.Status == Status.Available).ToList();
+            Assert.NotNull(availableBooks);
+            Assert.Equal(2, availableBooks.Count);
 
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<IEnumerable<BookViewModel>>(viewResult.Model);
-            Assert.Equal(books.Count - activeRentals.Count, model.Count());
+            Assert.Equal(availableBooks.Count, model.Count());
         }
 
         [Fact]
@@ -157,14 +156,13 @@ namespace BookLibrary.Tests.Controllers
             Assert.NotNull(rentals);
             Assert.Equal(TestDbSeeder.Rentals.Length, books.Count);
 
-            var activeRentals = rentals
-                .Where(r => r.EndDate == null)
-                .GroupBy(r => r.Book)
-                .ToList();
+            var rentedBooks = books.Where(b => b.Status == Status.Rented).ToList();
+            Assert.NotNull(rentedBooks);
+            Assert.Single(rentedBooks);
 
             var viewResult = Assert.IsType<ViewResult>(result);
             var model = Assert.IsAssignableFrom<IEnumerable<BookViewModel>>(viewResult.Model);
-            Assert.Equal(activeRentals.Count, model.Count());
+            Assert.Equal(rentedBooks.Count, model.Count());
         }
 
         [Fact]
@@ -205,12 +203,14 @@ namespace BookLibrary.Tests.Controllers
             //Assert
             var book = await _db.Books.Include(b => b.Rentals).FirstOrDefaultAsync(b => b.Id == bookId);
             Assert.NotNull(book);
+            Assert.Equal(Status.Rented, book.Status);
 
             var lastRental = await _db.Rentals
                 .Where(r => r.BookId == bookId)
-                .OrderByDescending(r => r.StartDate)
+                .OrderByDescending(r => r.BeginDate)
                 .FirstOrDefaultAsync();
-            Assert.True(lastRental != null && lastRental.EndDate == null);
+            Assert.NotNull(lastRental);
+            Assert.Null(lastRental.EndDate);
 
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Null(redirectToActionResult.ControllerName);
@@ -232,15 +232,11 @@ namespace BookLibrary.Tests.Controllers
             //Assert
             var book = await _db.Books.Include(b => b.Rentals).FirstOrDefaultAsync(b => b.Id == bookId);
             Assert.NotNull(book);
+            Assert.NotEqual(Status.Available, book.Status);
 
-            var lastRental = await _db.Rentals
-                .Where(r => r.BookId == bookId)
-                .OrderByDescending(r => r.StartDate)
-                .FirstOrDefaultAsync();
-            Assert.True(lastRental != null && lastRental.EndDate == null);
-
-            var objectResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Parameters are not valid.", objectResult.Value);
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(405, objectResult.StatusCode);
+            Assert.Equal("Method call is invalid.", objectResult.Value);
         }
 
         [Fact]
@@ -262,7 +258,7 @@ namespace BookLibrary.Tests.Controllers
         }
 
         [Fact]
-        public async Task EndRentalOnGet_WhenEntityExistsAndIsRented_ReturnsRedirectToIndex()
+        public async Task FinishRentalOnGet_WhenEntityExistsAndIsRented_ReturnsRedirectToIndex()
         {
             //Arrange
             TestDbSeeder.Initialize(_db);
@@ -271,17 +267,19 @@ namespace BookLibrary.Tests.Controllers
 
             //Act
             var bookId = 1;
-            var result = await _controller.EndRental(bookId);
+            var result = await _controller.FinishRental(bookId);
 
             //Assert
             var book = await _db.Books.Include(b => b.Rentals).FirstOrDefaultAsync(b => b.Id == bookId);
             Assert.NotNull(book);
+            Assert.Equal(Status.Available, book.Status);
 
             var lastRental = await _db.Rentals
                 .Where(r => r.BookId == bookId)
-                .OrderByDescending(r => r.StartDate)
+                .OrderByDescending(r => r.BeginDate)
                 .FirstOrDefaultAsync();
-            Assert.True(lastRental != null && lastRental.EndDate != null);
+            Assert.NotNull(lastRental);
+            Assert.NotNull(lastRental.EndDate);
 
             var redirectToActionResult = Assert.IsType<RedirectToActionResult>(result);
             Assert.Null(redirectToActionResult.ControllerName);
@@ -289,7 +287,7 @@ namespace BookLibrary.Tests.Controllers
         }
 
         [Fact]
-        public async Task EndRentalOnGet_WhenEntityExistsAndIsNotRented_ReturnsBadRequestObjectResult()
+        public async Task FinishRentalOnGet_WhenEntityExistsAndIsNotRented_ReturnsBadRequestObjectResult()
         {
             //Arrange
             TestDbSeeder.Initialize(_db);
@@ -298,31 +296,27 @@ namespace BookLibrary.Tests.Controllers
 
             //Act
             var bookId = 2;
-            var result = await _controller.EndRental(bookId);
+            var result = await _controller.FinishRental(bookId);
 
             //Assert
             var book = await _db.Books.Include(b => b.Rentals).FirstOrDefaultAsync(b => b.Id == bookId);
             Assert.NotNull(book);
+            Assert.NotEqual(Status.Rented, book.Status);
 
-            var lastRental = await _db.Rentals
-                .Where(r => r.BookId == bookId)
-                .OrderByDescending(r => r.StartDate)
-                .FirstOrDefaultAsync();
-            Assert.True(lastRental != null && lastRental.EndDate != null);
-
-            var objectResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Parameters are not valid.", objectResult.Value);
+            var objectResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(405, objectResult.StatusCode);
+            Assert.Equal("Method call is invalid.", objectResult.Value);
         }
 
         [Fact]
-        public async Task EndRentalOnGet_WhenEntityDoesNotExist_ReturnsNotFoundObjectResult()
+        public async Task FinishRentalOnGet_WhenEntityDoesNotExist_ReturnsNotFoundObjectResult()
         {
             //Arrange
             TestDbSeeder.Initialize(_db);
 
             //Act
             var bookId = 1;
-            var result = await _controller.EndRental(bookId);
+            var result = await _controller.FinishRental(bookId);
 
             //Assert
             var book = await _db.Books.Include(b => b.Rentals).FirstOrDefaultAsync(b => b.Id == bookId);

@@ -20,6 +20,8 @@ namespace BookLibrary.Models
 
         public string Author { get; set; }
 
+        public Status Status { get; set; }
+
         #endregion
 
 

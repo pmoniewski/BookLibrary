@@ -45,16 +45,46 @@
 			</dd>
 		</dl>
 	</div>
-	@if (Model.Rentals != null && Model.Rentals.Count > 0)
-	{
+	<div class="col-12">
+		<h3>Rentals Management</h3>
+		<dl class="row p-3">
+			<dt class="col-3">
+				@Html.DisplayNameFor(model => model.Status)
+			</dt>
+			<dd class="col-9">
+				@Html.DisplayFor(model => model.Status)
+			</dd>
+			<dt class="col-3"></dt>
+			<dd class="col-9">
+				<div class="form-group row mt-3">
+					<div class="col-3">
+					@if (Model.Status == Status.Available)
+					{
+						<a asp-action="StartRental" asp-route-id="@Model.Id" class="btn btn-success form-control">Start Rental</a>
+					}
+					else if (Model.Status == Status.Rented)
+					{
+						<a asp-action="FinishRental" asp-route-id="@Model.Id" class="btn btn-danger form-control">Finish Rental</a>
+					}
+					else
+					{
+						<a asp-action="Index" asp-route-id="@Model.Id" class="btn btn-info form-control">Unknown Status</a>
+					}
+					</div>
+				</div>
+			</dd>
+		</dl>
+	</div>
+@if (Model.Rentals != null && Model.Rentals.Count > 0)
+{
 	<div class="col-12">
 		<h3>History of Rentals</h3>
 		<ul>
-		@foreach (var item in Model.Rentals.OrderByDescending(r => r.StartDate))
+		@foreach (var item in Model.Rentals.OrderByDescending(r => r.BeginDate))
 		{
-			<li>@item.StartDate - @(item.EndDate != null ? item.EndDate : "current")</li>
+			<li>@item.BeginDate - @(item.EndDate != null ? item.EndDate : "current")</li>
 		}
 		</ul>
 	</div>
-	}
+}
 </div>

@@ -12,7 +12,7 @@ namespace BookLibrary.Models
         public int Id { get; set; }
 
         [Required]
-        public DateTime StartDate { get; set; }
+        public DateTime BeginDate { get; set; }
 
         public DateTime? EndDate { get; set; }
 

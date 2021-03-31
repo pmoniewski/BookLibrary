@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using BookLibrary.Models;
 
 namespace BookLibrary.ViewModels
 {
@@ -20,19 +21,14 @@ namespace BookLibrary.ViewModels
 
         public string Author { get; set; }
 
+        public Status Status { get; set; }
+
         #endregion
 
 
         #region Navigation properties
 
         public virtual IList<RentalViewModel> Rentals { get; set; }
-
-        #endregion
-
-
-        #region Special properties
-
-        public bool CurrentlyRented;
 
         #endregion
     }

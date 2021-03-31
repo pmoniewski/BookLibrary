@@ -26,7 +26,9 @@ namespace BookLibrary.Services
 
         public async Task<IEnumerable<BookViewModel>> GetBooksCollection()
         {
-            IEnumerable<Book> booksList = await _db.Books.ToListAsync();
+            IEnumerable<Book> booksList = await _db.Books
+                .Include(b => b.Rentals)
+                .ToListAsync();
 
             return _mapper.Map<IEnumerable<BookViewModel>>(booksList);
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using BookLibrary.Models;
 
 namespace BookLibrary.ViewModels
 {
@@ -12,11 +13,20 @@ namespace BookLibrary.ViewModels
         public int Id { get; set; }
 
         [Required]
-        public DateTime StartDate { get; set; }
+        public DateTime BeginDate { get; set; }
 
         public DateTime? EndDate { get; set; }
 
-        public string Comment { get; set; }
+        #endregion
+
+
+        #region Navigation properties
+
+        [Required]
+        public int BookId { get; set; }
+
+        [Required]
+        public BookViewModel Book { get; set; }
 
         #endregion
     }

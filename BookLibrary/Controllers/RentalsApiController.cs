@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BookLibrary.Data;
 using BookLibrary.Services;
@@ -27,7 +28,7 @@ namespace BookLibrary.Controllers
 
             try
             {
-                booksList = await _rentalsService.GetBooksWithRentalsCollection();
+                booksList = await _rentalsService.GetBooksCollection();
             }
             catch (Exception e)
             {
@@ -87,6 +88,10 @@ namespace BookLibrary.Controllers
             {
                 return NotFound(e.Message);
             }
+            catch (InvalidOperationException e)
+            {
+                return StatusCode(StatusCodes.Status405MethodNotAllowed, e.Message);
+            }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
@@ -95,18 +100,22 @@ namespace BookLibrary.Controllers
             return Ok();
         }
 
-        // PUT: api/rentals/endrental/5
-        [Route("api/rentals/endrental/{id}")]
+        // PUT: api/rentals/finishrental/5
+        [Route("api/rentals/finishrental/{id}")]
         [HttpPut]
-        public async Task<IActionResult> EndRental(int? id)
+        public async Task<IActionResult> FinishRental(int? id)
         {
             try
             {
-                await _rentalsService.EndRental(id);
+                await _rentalsService.FinishRental(id);
             }
             catch (ArgumentException e)
             {
                 return NotFound(e.Message);
+            }
+            catch (InvalidOperationException e)
+            {
+                return StatusCode(StatusCodes.Status405MethodNotAllowed, e.Message);
             }
             catch (Exception e)
             {
